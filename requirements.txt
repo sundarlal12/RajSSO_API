@@ -1,4 +1,7 @@
 fastapi
 mangum
 uvicorn
-
+pydantic
+requests
+beautifulsoup4
+pycryptodome
