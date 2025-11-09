@@ -9,8 +9,4 @@
 #     return asgi_handler(event, context)
 
 # api/index.py
-from mangum import Mangum
-from raj_salary import app   # your FastAPI app instance
-
-# Vercel calls this handler per request
-handler = Mangum(app)
+from raj_salary import app  # FastAPI() instance
