@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+import uuid, base64, traceback, logging
 
 # -------------------- Standard / Third-party imports --------------------
 from bs4 import BeautifulSoup       # pip install beautifulsoup4
@@ -533,10 +537,7 @@ def main():
 
 
 # === FastAPI section (drop-in) ==============================================
-from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-import uuid, base64, traceback, logging
+
 
 app = FastAPI(title="Rajasthan SSO Salary API")
 
@@ -573,6 +574,10 @@ class LoginPayload(BaseModel):
 @app.get("/api/health")
 def api_health():
     return {"ok": True}
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
 
 # ------------------------------ /api/captcha --------------------------------
 # Allow GET or POST so simple curl works
