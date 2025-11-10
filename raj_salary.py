@@ -21,7 +21,32 @@ import requests
 
 from Crypto.Cipher import AES
 from PIL import Image, ImageOps, ImageFilter, ImageEnhance
-import pytesseract
+
+try:
+    import pytesseract
+except Exception:
+    pytesseract = None  # not required for /api endpoints
+
+# --- Optional captcha solver (do not block app startup if missing) ---
+try:
+    from xapacthaslowve import XCaptchaSolver
+except Exception:
+    class XCaptchaSolver:  # safe stub
+        def __init__(self, *args, **kwargs):
+            pass
+        def solve_from_url(self, *args, **kwargs):
+            return None
+
+try:
+    from Crypto.Cipher import AES   # pycryptodome
+except Exception:
+    AES = None
+
+# Pillow
+try:
+    from PIL import Image, ImageOps, ImageFilter, ImageEnhance
+except Exception:
+    Image = ImageOps = ImageFilter = ImageEnhance = None
 
 # Optional OpenCV
 try:
