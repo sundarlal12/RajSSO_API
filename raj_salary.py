@@ -650,6 +650,67 @@ def proxy_get(session_id: str = Query(...), url: str = Query(...)):
     return Response(content=r.content, media_type=content_type, status_code=r.status_code)
 
 
+
+
+
+
+
+
+from fastapi import Query, Response
+from fastapi.responses import StreamingResponse
+from urllib.parse import urlparse
+
+ALLOWED_PAYSLIP_HOSTS = {"rajerp.discoms.rajasthan.gov.in"}
+
+@app.get("/api/payslip")
+def api_payslip(session_id: str = Query(...), url: str = Query(...)):
+    """
+    Server-side proxy to fetch a payslip page/PDF using the existing
+    requests.Session (with ASP.NET_SessionId) stored under session_id.
+    Returns HTML (with <base> injected) or streams the PDF.
+    """
+    ctx = SESSION_STORE.get(session_id)
+    if not ctx:
+        raise HTTPException(status_code=400, detail={"success": False, "err": "bad_session", "msg": "Invalid/expired session_id"})
+
+    sso: RajasthanSSOComplete = ctx["sso"]
+    if not sso or not isinstance(sso, RajasthanSSOComplete):
+        raise HTTPException(status_code=400, detail={"success": False, "err": "no_session", "msg": "Backend session missing"})
+
+    # Safety: only allow the RP host
+    parsed = urlparse(url)
+    host = parsed.hostname or ""
+    if host.lower() not in ALLOWED_PAYSLIP_HOSTS:
+        raise HTTPException(status_code=400, detail={"success": False, "err": "host_not_allowed", "msg": f"Host not allowed: {host}"})
+
+    # Use same session/cookies; set a sensible Referer
+    headers = sso._rp_headers()
+    headers["Referer"] = "https://rajerp.discoms.rajasthan.gov.in/SSOIndex.aspx"
+
+    try:
+        r = sso.session.get(url, headers=headers, allow_redirects=True, timeout=45)
+    except Exception as e:
+        raise HTTPException(status_code=502, detail={"success": False, "err": "fetch_failed", "msg": str(e)})
+
+    ctype = r.headers.get("content-type", "").lower()
+
+    # If PDF → stream it back
+    if "application/pdf" in ctype or r.content[:4] == b"%PDF":
+        return StreamingResponse(io.BytesIO(r.content), media_type="application/pdf")
+
+    # Otherwise treat as HTML; inject <base> so relative assets resolve
+    text = r.text
+    # very small, safe injection (does not break existing <head>)
+    if "<head" in text.lower():
+        text = re.sub(r"(?i)<head(.*?)>", r'<head\1><base href="https://rajerp.discoms.rajasthan.gov.in/">', text, count=1)
+    else:
+        text = f'<base href="https://rajerp.discoms.rajasthan.gov.in/">{text}'
+
+    return Response(content=text, media_type="text/html; charset=utf-8")
+
+
+
+
 # ------------------------------ /api/captcha --------------------------------
 # Allow GET or POST so simple curl works
 @app.get("/api/captcha")

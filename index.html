@@ -1,364 +1,297 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Rajasthan SSO – Salary Portal</title>
-  <!-- Tailwind via CDN (for quick setup) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    /* Smooth progress bar animation */
-    .progress-bar {
-      transition: width 0.25s ease;
-    }
-    /* Table responsiveness */
-    .table-wrap {
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rajasthan SSO — Salary</title>
+<style>
+  :root{
+    --bg:#0b1220; --card:#0f172a; --muted:#94a3b8; --text:#e2e8f0; --brand:#10b981;
+    --ring:#334155; --danger:#ef4444; --table:#0b1220;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:linear-gradient(180deg,#0a0f1a,#0c1426 50%,#0a0f1a);
+    color:var(--text); font:14px/1.45 Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+  }
+  .wrap{min-height:100%; display:flex; align-items:center; justify-content:center; padding:16px}
+  .card{
+    width:100%; max-width:980px; background:rgba(15,23,42,.9);
+    border:1px solid rgba(148,163,184,.15); border-radius:16px; overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.35)
+  }
+  .card-head{display:flex; gap:12px; align-items:center; padding:12px 14px; border-bottom:1px solid rgba(148,163,184,.12)}
+  .logo{width:32px; height:32px; border-radius:9px; display:grid; place-items:center; font-weight:700; color:white;
+    background:radial-gradient(100% 100% at 30% 20%, #34d399 0%, #10b981 40%, #059669 100%)}
+  .title{font-size:16px; font-weight:700}
+  .sub{color:var(--muted); font-size:12px}
+
+  /* layout */
+  .grid{
+    display:grid; gap:14px; padding:14px;
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 900px){ .grid{grid-template-columns: 360px 1fr;} }
+
+  .panel{
+    background:rgba(2,6,23,.35); border:1px solid rgba(148,163,184,.12);
+    border-radius:14px; padding:14px;
+  }
+  .panel h3{margin:0 0 10px; font-size:14px}
+  label{display:block; font-size:12px; color:var(--muted); margin:8px 0 6px}
+  input{
+    width:100%; padding:12px; border-radius:10px; border:1px solid var(--ring);
+    background:#0b1020; color:var(--text); outline:none;
+  }
+  input:focus{border-color:var(--brand); box-shadow:0 0 0 3px rgba(16,185,129,.15)}
+
+  /* mobile-safe row */
+  .row{display:flex; gap:10px; flex-wrap:wrap}
+  .row > *{flex:1 1 140px; min-width:0}
+
+  /* captcha box is now grid on small screens for perfect wrapping */
+  .captchaBox{
+    display:grid; grid-template-columns: auto; grid-template-rows: auto auto;
+    gap:8px; align-items:center; width:100%;
+    border:1px dashed rgba(148,163,184,.3); border-radius:12px; padding:8px;
+    background:#0a0f1d;
+  }
+  .captchaImgWrap{
+    width:100%; display:flex; justify-content:center;
+  }
+  #captchaImg{
+    max-width:100%; height:auto; max-height:60px; object-fit:contain; display:block; border-radius:8px;
+  }
+  #btnRefresh{justify-self:stretch}
+
+  @media (min-width: 480px){
+    .captchaBox{grid-template-columns: 1fr auto; grid-template-rows: auto}
+    #btnRefresh{justify-self:end}
+  }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px; cursor:pointer;
+    padding:11px 14px; border-radius:10px; border:1px solid rgba(255,255,255,.08);
+    background:linear-gradient(180deg, #111827, #0b1220); color:#e5e7eb; font-weight:600;
+  }
+  .btn:hover{filter:brightness(1.08)}
+  .brand{background:linear-gradient(180deg, #10b981, #16a34a); color:#062a1f; border:none}
+  .ghost{background:transparent; border:1px solid var(--ring)}
+  .btn:disabled{opacity:.5; cursor:not-allowed}
+
+  .progress{height:10px; background:#0b1220; border:1px solid rgba(148,163,184,.14); border-radius:999px; overflow:hidden; margin:10px 0 0}
+  .bar{height:100%; width:0%; background:linear-gradient(90deg,#10b981,#22c55e 60%,#86efac); transition:width .3s ease}
+  .helper{font-size:12px; color:var(--muted); margin-top:10px}
+
+  /* table */
+  .table-wrap{background:rgba(2,6,23,.35); border:1px solid rgba(148,163,184,.12); border-radius:14px; overflow:hidden}
+  .table-head{display:flex; justify-content:space-between; align-items:center; padding:12px 14px; border-bottom:1px solid rgba(148,163,184,.12)}
+  .table-head h3{margin:0; font-size:14px}
+  .table-responsive{width:100%; overflow:auto}
+  table{width:100%; border-collapse:collapse; min-width:640px; background:var(--table)}
+  th,td{padding:10px 12px; border-bottom:1px solid rgba(148,163,184,.12); text-align:left; font-size:13px}
+  th{color:#a7b0c0; font-weight:600; background:rgba(148,163,184,.06)}
+  tr:hover td{background:rgba(148,163,184,.05)}
+  .pill{padding:4px 8px; border-radius:999px; font-size:12px; font-weight:700; display:inline-block; background:rgba(16,185,129,.12); color:#34d399; border:1px solid rgba(16,185,129,.35)}
+
+  /* overlay + toast */
+  .overlay{position:fixed; inset:0; background:rgba(2,6,23,.55); backdrop-filter: blur(2px); display:none; align-items:center; justify-content:center; z-index:50}
+  .spinner{width:64px; height:64px; border-radius:50%; border:6px solid rgba(255,255,255,.12); border-top-color:var(--brand); animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .toast{position:fixed; inset:auto 16px 16px auto; max-width:86vw; background:#0b1220; border:1px solid rgba(148,163,184,.25); color:var(--text); padding:10px 12px; border-radius:10px; box-shadow:0 10px 30px rgba(0,0,0,.35); display:none}
+</style>
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-900">
-  <div class="max-w-5xl mx-auto p-4 sm:p-6 lg:p-10">
-    <header class="mb-8">
-      <h1 class="text-2xl sm:text-3xl font-bold">Rajasthan SSO – Salary Portal</h1>
-      <p class="text-slate-600">Secure login with captcha → view Salary table → open Payslip</p>
-    </header>
-
-    <!-- Login Card -->
-    <section id="login-card" class="bg-white rounded-2xl shadow p-5 sm:p-7 mb-8">
-      <h2 class="text-xl font-semibold mb-4">Login</h2>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm mb-1">Username</label>
-          <input id="username" type="text" placeholder="e.g. RAM.DEV.RVUN"
-                 class="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500" />
-        </div>
-        <div>
-          <label class="block text-sm mb-1">Password</label>
-          <input id="password" type="password" placeholder="••••••••"
-                 class="w-full border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500" />
-        </div>
+<body>
+<div class="wrap">
+  <div class="card">
+    <div class="card-head">
+      <div class="logo">SSO</div>
+      <div>
+        <div class="title">Rajasthan SSO — Salary</div>
+        <div class="sub">Login, solve captcha, and view your salary table & payslips</div>
       </div>
+    </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 items-end">
-        <div>
-          <label class="block text-sm mb-1">Captcha</label>
-          <div class="flex items-center gap-3">
-            <input id="captcha" type="text" inputmode="numeric" maxlength="6" placeholder="6 digits"
-                   class="flex-1 border rounded-lg px-3 py-2 outline-none focus:ring-2 focus:ring-emerald-500" />
-            <button id="refreshBtn"
-                    class="whitespace-nowrap bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg px-3 py-2">
-              Refresh
-            </button>
+    <div class="grid">
+      <!-- left: login -->
+      <div class="panel">
+        <h3>1) Login</h3>
+        <label>Username</label>
+        <input id="username" autocomplete="username" placeholder="e.g. RAM.DEV.RVUN" />
+
+        <label>Password</label>
+        <input id="password" type="password" autocomplete="current-password" placeholder="••••••••" />
+
+        <label>Captcha</label>
+        <div class="row">
+          <div class="captchaBox">
+            <div class="captchaImgWrap"><img id="captchaImg" alt="Captcha" /></div>
+            <button class="btn ghost" id="btnRefresh">Refresh</button>
           </div>
-          <p class="text-xs text-slate-500 mt-1">Enter exactly 6 digits</p>
+          <input id="captcha" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Enter 6-digit captcha" />
         </div>
 
-        <div class="flex items-center gap-4">
-          <img id="captchaImg" alt="captcha" class="h-12 rounded border bg-white object-contain" />
-          <button id="getCaptchaBtn"
-                  class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg px-4 py-2">
-            Get Captcha
-          </button>
+        <div class="row" style="margin-top:12px">
+          <button class="btn brand" id="btnLogin">Login & Fetch My Salary</button>
+          <button class="btn" id="btnReset" title="Clear saved session">Reset</button>
         </div>
+
+        <div class="progress"><div class="bar" id="bar"></div></div>
+        <div class="helper">If login fails due to expired captcha/tokens, tap <b>Refresh</b> and try again.</div>
       </div>
 
-      <!-- Progress -->
-      <div id="progressWrap" class="mt-6 hidden">
-        <div class="flex justify-between mb-1">
-          <span class="text-sm font-medium">Logging in…</span>
-          <span id="progressPct" class="text-sm">0%</span>
+      <!-- right: salary -->
+      <div class="table-wrap">
+        <div class="table-head">
+          <h3>2) My Salary</h3>
+          <span id="statusBadge" class="pill" style="display:none">Ready</span>
         </div>
-        <div class="w-full bg-slate-200 rounded-full h-2.5">
-          <div id="progressBar" class="progress-bar bg-emerald-600 h-2.5 rounded-full" style="width:0%"></div>
-        </div>
-      </div>
-
-      <!-- Actions -->
-      <div class="mt-6 flex flex-col sm:flex-row gap-3">
-        <button id="loginBtn"
-                class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg px-5 py-2.5">
-          Login & Fetch Salary
-        </button>
-        <button id="resetBtn"
-                class="bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium rounded-lg px-5 py-2.5">
-          Reset
-        </button>
-      </div>
-
-      <!-- Errors -->
-      <div id="errorBox" class="mt-4 hidden p-3 rounded-lg bg-rose-50 text-rose-700 text-sm"></div>
-      <div id="noteBox" class="mt-3 hidden p-3 rounded-lg bg-amber-50 text-amber-700 text-sm"></div>
-    </section>
-
-    <!-- Salary Section -->
-    <section id="salary-sec" class="bg-white rounded-2xl shadow p-5 sm:p-7 hidden">
-      <div class="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h2 class="text-xl font-semibold">My Salary</h2>
-          <p id="salarySub" class="text-slate-600 text-sm">Fetched rows: 0</p>
-        </div>
-        <div class="flex gap-2">
-          <button id="reloadSalaryBtn"
-                  class="bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg px-4 py-2">
-            Reload Captcha / New Session
-          </button>
+        <div class="table-responsive">
+          <table id="salaryTable">
+            <thead id="thead"></thead>
+            <tbody id="tbody"></tbody>
+          </table>
         </div>
       </div>
-
-      <div class="table-wrap mt-5">
-        <table class="min-w-full border rounded-xl overflow-hidden">
-          <thead id="salaryHead" class="bg-slate-100"></thead>
-          <tbody id="salaryBody" class="divide-y"></tbody>
-        </table>
-      </div>
-    </section>
+    </div>
   </div>
+</div>
 
-  <script>
-    // === CONFIG ===
-    const API_BASE = "https://raj-sso-api.vercel.app"; // <-- change if needed
-    // =============
+<!-- loader + toast -->
+<div class="overlay" id="overlay"><div class="spinner"></div></div>
+<div class="toast" id="toast"></div>
 
-    let SESSION_ID = null;
-    let CURRENT_SALARY = null;
+<script>
+/*** config ***/
+const API_BASE = "https://raj-sso-api.vercel.app";
+const STORAGE_KEY = "raj_sso_session_id"; // ← uses session_id everywhere
 
-    const el = (id) => document.getElementById(id);
+/*** tiny helpers ***/
+const $ = (s) => document.querySelector(s);
+function toast(msg, isErr=false){
+  const t = $("#toast");
+  t.textContent = msg;
+  t.style.borderColor = isErr ? "rgba(239,68,68,.55)" : "rgba(16,185,129,.55)";
+  t.style.display = "block";
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=>{ t.style.display="none"; }, 4200);
+}
+function overlay(on){ $("#overlay").style.display = on ? "flex" : "none"; }
+function setProgress(p){ $("#bar").style.width = `${Math.max(0,Math.min(100,p))}%`; }
+function badge(msg){ const el=$("#statusBadge"); el.textContent=msg; el.style.display="inline-block"; }
 
-    const ui = {
-      username: el('username'),
-      password: el('password'),
-      captcha:  el('captcha'),
-      captchaImg: el('captchaImg'),
-      getCaptchaBtn: el('getCaptchaBtn'),
-      refreshBtn: el('refreshBtn'),
-      loginBtn: el('loginBtn'),
-      resetBtn: el('resetBtn'),
-      progressWrap: el('progressWrap'),
-      progressBar:  el('progressBar'),
-      progressPct:  el('progressPct'),
-      errorBox: el('errorBox'),
-      noteBox: el('noteBox'),
-      salarySec: el('salary-sec'),
-      salaryHead: el('salaryHead'),
-      salaryBody: el('salaryBody'),
-      salarySub: el('salarySub'),
-      reloadSalaryBtn: el('reloadSalaryBtn')
-    };
+/*** captcha → returns session_id ***/
+async function fetchCaptcha(){
+  setProgress(0);
+  badge("Fetching captcha…");
+  $("#btnLogin").disabled = true; $("#btnRefresh").disabled = true; overlay(true);
+  try{
+    const res = await fetch(`${API_BASE}/api/captcha`, { method:"GET" });
+    const data = await res.json();
+    // backend returns { success, session_id, captcha_b64 }
+    if(!data.success || !data.session_id) throw new Error(data.msg || "Captcha fetch failed");
+    localStorage.setItem(STORAGE_KEY, data.session_id);               // ← save session_id
+    $("#captchaImg").src = data.captcha_b64;                          // show captcha
+    badge("Captcha ready"); toast("Captcha ready");
+  }catch(e){ toast(e.message || "Captcha error", true); }
+  finally{
+    overlay(false); $("#btnLogin").disabled = false; $("#btnRefresh").disabled = false; setProgress(8);
+  }
+}
 
-    function showError(msg) {
-      ui.errorBox.textContent = msg || 'Unknown error';
-      ui.errorBox.classList.remove('hidden');
+/*** login + mysalary ***/
+function renderTable(payload){
+  const thead=$("#thead"), tbody=$("#tbody");
+  thead.innerHTML=""; tbody.innerHTML="";
+  if(!payload || !payload.headers || !payload.rows) return;
+
+  const trH=document.createElement("tr");
+  payload.headers.forEach(h=>{ const th=document.createElement("th"); th.textContent=h||""; trH.appendChild(th); });
+  const actH=document.createElement("th"); actH.textContent="Actions"; trH.appendChild(actH);
+  thead.appendChild(trH);
+
+  payload.rows.forEach(row=>{
+    const tr=document.createElement("tr");
+    (row.cells||[]).forEach(c=>{ const td=document.createElement("td"); td.textContent=c||""; tr.appendChild(td); });
+    const tdAct=document.createElement("td"); const btn=document.createElement("button");
+    btn.className="btn"; btn.textContent="Open Payslip";
+    btn.onclick=()=>openPayslip(row);
+    tdAct.appendChild(btn); tr.appendChild(tdAct); tbody.appendChild(tr);
+  });
+}
+
+async function openPayslip(row){
+  try{
+    const session_id = localStorage.getItem(STORAGE_KEY);
+    if(!session_id){ toast("Session missing. Refresh captcha and login again.", true); return; }
+    const link = (row.links && row.links[0] && row.links[0].href) || null;
+    if(!link){ toast("No payslip link on this row.", true); return; }
+
+    // If you add a backend endpoint that fetches with cookies:
+    // GET /api/payslip?url=...&session_id=...
+    const q = new URLSearchParams({ url: link, session_id });
+    const res = await fetch(`${API_BASE}/api/payslip?${q.toString()}`);
+    if(!res.ok){ toast("Payslip failed (add /api/payslip on backend).", true); return; }
+    const data = await res.json();
+    if(data.pdf_b64){
+      const blob = await (await fetch(data.pdf_b64)).blob();
+      const url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    }else if(data.redirect){
+      window.open(data.redirect, "_blank");
+    }else{
+      toast("Payslip received but format unknown.", true);
+    }
+  }catch(e){ toast(e.message || "Payslip error", true); }
+}
+
+async function loginAndFetch(){
+  const username=$("#username").value.trim();
+  const password=$("#password").value;
+  const captcha=$("#captcha").value.trim();
+  const session_id = localStorage.getItem(STORAGE_KEY);               // ← use session_id
+
+  if(!session_id){ toast("Session expired. Refresh captcha.", true); return; }
+  if(!username || !password || !/^\d{6}$/.test(captcha)){
+    toast("Enter username, password and 6-digit captcha.", true); return;
+  }
+
+  setProgress(12); overlay(true); badge("Logging in…"); $("#btnLogin").disabled=true;
+
+  try{
+    const res = await fetch(`${API_BASE}/api/mysalary`,{
+      method:"POST", headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ session_id, username, password, captcha })   // ← session_id sent
+    });
+    setProgress(56);
+    const data = await res.json();
+
+    if(!res.ok || !data.success){
+      const err = data?.detail?.err || data?.err || "login_failed";
+      if(err === "login_not_confirmed" || err === "bad_session"){ await fetchCaptcha(); }
+      throw new Error(data?.detail?.msg || data?.msg || "Login or salary fetch failed.");
     }
 
-    function clearError() {
-      ui.errorBox.classList.add('hidden');
-      ui.errorBox.textContent = '';
-    }
+    setProgress(86); badge("Rendering table…");
+    renderTable(data.mysalary);
+    badge("Done"); toast("Salary table loaded."); setProgress(100);
+  }catch(e){
+    toast(e.message || "Unexpected error", true); setProgress(0);
+  }finally{
+    overlay(false); $("#btnLogin").disabled=false;
+  }
+}
 
-    function showNote(msg) {
-      ui.noteBox.textContent = msg;
-      ui.noteBox.classList.remove('hidden');
-    }
-
-    function clearNote() {
-      ui.noteBox.classList.add('hidden');
-      ui.noteBox.textContent = '';
-    }
-
-    function setProgress(pct) {
-      const n = Math.max(0, Math.min(100, Math.round(pct)));
-      ui.progressBar.style.width = n + '%';
-      ui.progressPct.textContent = n + '%';
-    }
-
-    function startProgress() {
-      ui.progressWrap.classList.remove('hidden');
-      setProgress(8);
-      let t = 8, handle = setInterval(() => {
-        t = Math.min(90, t + (Math.random() * 7));
-        setProgress(t);
-        if (t >= 90) clearInterval(handle);
-      }, 300);
-      return () => {
-        clearInterval(handle);
-        setProgress(100);
-        setTimeout(() => {
-          ui.progressWrap.classList.add('hidden');
-          setProgress(0);
-        }, 500);
-      };
-    }
-
-    async function fetchCaptcha() {
-      clearError(); clearNote();
-      ui.captcha.value = '';
-      ui.captchaImg.src = '';
-      ui.getCaptchaBtn.disabled = true;
-      ui.refreshBtn.disabled = true;
-
-      try {
-        const res = await fetch(`${API_BASE}/api/captcha`, { method: 'GET' });
-        if (!res.ok) {
-          const t = await res.text();
-          throw new Error(`Captcha failed ${res.status}: ${t}`);
-        }
-        const data = await res.json();
-        if (!data?.success) {
-          throw new Error(data?.msg || 'Captcha response not successful');
-        }
-        SESSION_ID = data.session_id;
-        ui.captchaImg.src = data.captcha_b64;
-        showNote('New session created. Enter the captcha and click Login.');
-      } catch (e) {
-        showError(e.message);
-      } finally {
-        ui.getCaptchaBtn.disabled = false;
-        ui.refreshBtn.disabled = false;
-      }
-    }
-
-    function renderSalary(mysalary) {
-      // Headers
-      const headers = mysalary?.headers || [];
-      const rows = mysalary?.rows || [];
-      ui.salarySub.textContent = `Fetched rows: ${rows.length}`;
-      ui.salaryHead.innerHTML = '';
-      ui.salaryBody.innerHTML = '';
-
-      if (headers.length) {
-        const tr = document.createElement('tr');
-        headers.forEach(h => {
-          const th = document.createElement('th');
-          th.className = 'text-left text-xs sm:text-sm font-semibold px-3 py-2 border-b';
-          th.textContent = h;
-          tr.appendChild(th);
-        });
-        // Extra column for actions
-        const th = document.createElement('th');
-        th.className = 'text-left text-xs sm:text-sm font-semibold px-3 py-2 border-b';
-        th.textContent = 'Actions';
-        tr.appendChild(th);
-
-        ui.salaryHead.appendChild(tr);
-      }
-
-      rows.forEach(r => {
-        const tr = document.createElement('tr');
-        const cells = r?.cells || [];
-
-        cells.forEach(c => {
-          const td = document.createElement('td');
-          td.className = 'text-xs sm:text-sm px-3 py-2 align-top';
-          td.textContent = c;
-          tr.appendChild(td);
-        });
-
-        // Action cell: render any links (payslips) via proxy open
-        const action = document.createElement('td');
-        action.className = 'text-xs sm:text-sm px-3 py-2';
-
-        (r?.links || []).forEach((lnk, idx) => {
-          const a = document.createElement('a');
-          a.href = '#';
-          a.textContent = lnk.text || `Link ${idx+1}`;
-          a.className = 'text-indigo-600 hover:text-indigo-800 underline mr-3';
-          a.addEventListener('click', (ev) => {
-            ev.preventDefault();
-            openPayslipViaProxy(lnk.href);
-          });
-          action.appendChild(a);
-        });
-
-        tr.appendChild(action);
-        ui.salaryBody.appendChild(tr);
-      });
-
-      ui.salarySec.classList.remove('hidden');
-      window.scrollTo({ top: ui.salarySec.offsetTop - 16, behavior: 'smooth' });
-    }
-
-    async function openPayslipViaProxy(targetUrl) {
-      if (!SESSION_ID) {
-        showError('Session expired. Click "Reload Captcha / New Session" and Login again.');
-        return;
-      }
-      try {
-        // This calls the backend proxy you add below
-        const url = `${API_BASE}/api/proxy_get?session_id=${encodeURIComponent(SESSION_ID)}&url=${encodeURIComponent(targetUrl)}`;
-        // Open in a new tab without exposing cookies
-        window.open(url, '_blank', 'noopener,noreferrer');
-      } catch (e) {
-        showError(e.message);
-      }
-    }
-
-    async function loginAndFetchSalary() {
-      clearError(); clearNote();
-
-      const username = ui.username.value.trim();
-      const password = ui.password.value;
-      const captcha  = ui.captcha.value.trim();
-
-      if (!SESSION_ID) return showError('Please fetch the captcha first.');
-      if (!username || !password) return showError('Username and Password are required.');
-      if (!/^\d{6}$/.test(captcha)) return showError('Captcha must be exactly 6 digits.');
-
-      ui.loginBtn.disabled = true;
-
-      const stopProgress = startProgress();
-      try {
-        const payload = { session_id: SESSION_ID, username, password, captcha };
-        const res = await fetch(`${API_BASE}/api/mysalary`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        stopProgress();
-
-        if (!res.ok) {
-          const txt = await res.text();
-          throw new Error(`Login or Salary failed ${res.status}: ${txt}`);
-        }
-        const data = await res.json();
-        if (!data?.success) {
-          throw new Error(data?.detail?.msg || data?.msg || 'Login not confirmed');
-        }
-        CURRENT_SALARY = data.mysalary;
-        renderSalary(CURRENT_SALARY);
-        showNote('Login successful. Salary table loaded.');
-
-      } catch (e) {
-        stopProgress();
-        showError(e.message);
-      } finally {
-        ui.loginBtn.disabled = false;
-      }
-    }
-
-    function resetAll() {
-      clearError(); clearNote();
-      ui.username.value = '';
-      ui.password.value = '';
-      ui.captcha.value = '';
-      ui.captchaImg.src = '';
-      SESSION_ID = null;
-      CURRENT_SALARY = null;
-      ui.salarySec.classList.add('hidden');
-    }
-
-    // events
-    ui.getCaptchaBtn.addEventListener('click', fetchCaptcha);
-    ui.refreshBtn.addEventListener('click', fetchCaptcha);
-    ui.loginBtn.addEventListener('click', loginAndFetchSalary);
-    ui.resetBtn.addEventListener('click', resetAll);
-    ui.reloadSalaryBtn.addEventListener('click', () => { resetAll(); fetchCaptcha(); });
-
-    // auto-load captcha on page open
-    fetchCaptcha();
-  </script>
+/*** wire up ***/
+$("#btnRefresh").addEventListener("click", (e)=>{ e.preventDefault(); fetchCaptcha(); });
+$("#btnLogin").addEventListener("click", (e)=>{ e.preventDefault(); loginAndFetch(); });
+$("#btnReset").addEventListener("click", ()=>{
+  localStorage.removeItem(STORAGE_KEY);
+  $("#tbody").innerHTML=""; $("#thead").innerHTML="";
+  setProgress(0); badge("Reset"); toast("Reset done. Getting new captcha…"); fetchCaptcha();
+});
+window.addEventListener("load", fetchCaptcha);
+</script>
 </body>
 </html>
