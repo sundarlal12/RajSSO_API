@@ -67,7 +67,7 @@ except Exception:
     _HAS_CV2 = False
 
 # Your in-house captcha solver module
-# from xapacthaslowve import XCaptchaSolver   # ensure this file is importable
+
 
 # -------------------- RajasthanSSOComplete (your class) --------------------
 class RajasthanSSOComplete:
@@ -134,8 +134,8 @@ class RajasthanSSOComplete:
         if r.status_code != 200:
             return None
 
-        with open("mysalary.html", "w", encoding="utf-8") as f:
-            f.write(r.text)
+        # with open("mysalary.html", "w", encoding="utf-8") as f:
+        #     f.write(r.text)
 
         soup = BeautifulSoup(r.text, "html.parser")
         table = soup.select_one("table.table.table-vertical-center.table-thead-simple.margin-none")
@@ -193,8 +193,8 @@ class RajasthanSSOComplete:
         if r.status_code != 200:
             return None
         if "/signin" in r.url.lower():
-            with open("sso_page.html", "w", encoding="utf-8") as f:
-                f.write(r.text)
+            # with open("sso_page.html", "w", encoding="utf-8") as f:
+            #     f.write(r.text)
             return None
 
         html = r.text
@@ -217,8 +217,8 @@ class RajasthanSSOComplete:
         }
 
         if not tokens["__VIEWSTATE"]:
-            with open("sso_page.html", "w", encoding="utf-8") as f:
-                f.write(html)
+            # with open("sso_page.html", "w", encoding="utf-8") as f:
+            #     f.write(html)
             return None
 
         candidates = []
@@ -238,9 +238,9 @@ class RajasthanSSOComplete:
                 uniq.append(c)
         candidates = uniq
 
-        if not candidates:
-            with open("sso_page.html", "w", encoding="utf-8") as f:
-                f.write(html)
+        # if not candidates:
+        #     # with open("sso_page.html", "w", encoding="utf-8") as f:
+        #     #     f.write(html)
 
         return tokens, candidates
 
@@ -265,8 +265,8 @@ class RajasthanSSOComplete:
 
         m = re.search(r"name=['\"]userdetails['\"][^>]*value=['\"]([^'\"]+)['\"]", r.text)
         if not m:
-            with open("sso_post.html", "w", encoding="utf-8") as f:
-                f.write(r.text)
+            # with open("sso_post.html", "w", encoding="utf-8") as f:
+            #     f.write(r.text)
             return None
         return m.group(1)
 
@@ -425,15 +425,15 @@ class RajasthanSSOComplete:
         get_headers["Referer"] = f"{self.base_url}/signin"
         r = self.session.get(f"{self.base_url}/sso", headers=get_headers, allow_redirects=True)
         if r.status_code != 200 or "/signin" in r.url.lower():
-            with open("sso_page.html", "w", encoding="utf-8") as f:
-                f.write(r.text)
+            # with open("sso_page.html", "w", encoding="utf-8") as f:
+            #     f.write(r.text)
             return None
 
         html = r.text
         form = self._extract_hidden_inputs(html)
         if not form.get("__VIEWSTATE"):
-            with open("sso_page.html", "w", encoding="utf-8") as f:
-                f.write(html)
+            # with open("sso_page.html", "w", encoding="utf-8") as f:
+            #     f.write(html)
             return None
 
         evt = self._find_eventtarget(html)
@@ -447,8 +447,8 @@ class RajasthanSSOComplete:
         post_headers["Referer"] = f"{self.base_url}/sso"
         pr = self.session.post(f"{self.base_url}/sso", data=form, headers=post_headers, allow_redirects=True)
         if pr.status_code != 200:
-            with open("sso_post.html", "w", encoding="utf-8") as f:
-                f.write(pr.text)
+            # with open("sso_post.html", "w", encoding="utf-8") as f:
+            #     f.write(pr.text)
             return None
 
         html_post = pr.text
@@ -460,12 +460,12 @@ class RajasthanSSOComplete:
             m = re.search(pat, html_post, re.I)
             if m:
                 userdetails = m.group(1)
-                with open("sso_post.html", "w", encoding="utf-8") as f:
-                    f.write(html_post)
+                # with open("sso_post.html", "w", encoding="utf-8") as f:
+                #     f.write(html_post)
                 return userdetails
 
-        with open("sso_post.html", "w", encoding="utf-8") as f:
-            f.write(html_post)
+        # with open("sso_post.html", "w", encoding="utf-8") as f:
+        #     f.write(html_post)
         return None
 
     def analyze_response(self, response):
@@ -563,8 +563,8 @@ def main():
     salary_payload = sso.rp_fetch_my_salary()
     if not salary_payload:
         return
-    with open("rp_landing.html", "w", encoding="utf-8") as f:
-        f.write(rp_resp.text)
+    # with open("rp_landing.html", "w", encoding="utf-8") as f:
+    #     f.write(rp_resp.text)
     print(json.dumps({
         "success": True,
         "sso": {"userdetails_len": len(userdetails)},
