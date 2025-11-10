@@ -39,12 +39,12 @@ except Exception:
 
 
 # --- Optional captcha solver (don’t block startup if missing) ---
-try:
-    from xapacthaslowve import XCaptchaSolver
-except Exception:
-    class XCaptchaSolver:
-        def __init__(self, *args, **kwargs): ...
-        def solve_from_url(self, *args, **kwargs): return None
+# try:
+#     from xapacthaslowve import XCaptchaSolver
+# except Exception:
+#     class XCaptchaSolver:
+#         def __init__(self, *args, **kwargs): ...
+#         def solve_from_url(self, *args, **kwargs): return None
 
 
 
@@ -67,7 +67,7 @@ except Exception:
     _HAS_CV2 = False
 
 # Your in-house captcha solver module
-from xapacthaslowve import XCaptchaSolver   # ensure this file is importable
+# from xapacthaslowve import XCaptchaSolver   # ensure this file is importable
 
 # -------------------- RajasthanSSOComplete (your class) --------------------
 class RajasthanSSOComplete:
