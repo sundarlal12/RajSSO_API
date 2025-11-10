@@ -10,7 +10,7 @@ from urllib.parse import urljoin, quote
 from html import unescape
 from pathlib import Path
 from typing import Optional, Any, Dict, List
-
+from fastapi.middleware.cors import CORSMiddleware
 import json
 import re
 import io
@@ -576,6 +576,14 @@ def main():
 
 
 app = FastAPI(title="Rajasthan SSO Salary API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],          # safest for your case since browser sends Origin: null
+    allow_credentials=False,      # keep False if you don't use browser cookies
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Basic logging so you see tracebacks in the console
 logging.basicConfig(level=logging.INFO)
