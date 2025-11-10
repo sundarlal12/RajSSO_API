@@ -37,6 +37,17 @@ except Exception:
         def solve_from_url(self, *args, **kwargs):
             return None
 
+
+# --- Optional captcha solver (don’t block startup if missing) ---
+try:
+    from xapacthaslowve import XCaptchaSolver
+except Exception:
+    class XCaptchaSolver:
+        def __init__(self, *args, **kwargs): ...
+        def solve_from_url(self, *args, **kwargs): return None
+
+
+
 try:
     from Crypto.Cipher import AES   # pycryptodome
 except Exception:
