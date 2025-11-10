@@ -56,21 +56,47 @@
 #     return JSONResponse({"error": str(exc)}, status_code=500)
 # api/index.py
 
+
 # api/index.py
 from fastapi import FastAPI
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import JSONResponse, PlainTextResponse
 
-# import your real FastAPI app from raj_salary.py
-from raj_salary import app as real_app
+app = FastAPI(title="RajSSO bootstrap")
 
-# a tiny bootstrap that mounts your real app at "/"
-app = FastAPI(title="RajSSO on Vercel")
+@app.get("/_status", include_in_schema=False)
+def _status():
+    return {"ok": True}
 
-# quiet favicon so you don't get noisy 404s
 @app.get("/favicon.ico", include_in_schema=False)
 @app.get("/favicon.png", include_in_schema=False)
-def _favicon():
+def _fav():
     return PlainTextResponse("", status_code=204)
 
-# mount your real app so its routes appear exactly as defined
-app.mount("/", real_app)
+# Try importing your real app ONLY when first needed, so we can expose the error
+_real_app = None
+_real_app_error = None
+
+def _load_real_app():
+    global _real_app, _real_app_error
+    if _real_app is not None or _real_app_error is not None:
+        return
+    try:
+        from raj_salary import app as real_app  # import your FastAPI() instance
+        _real_app = real_app
+    except Exception as e:
+        _real_app_error = e
+
+@app.get("/_import_error", include_in_schema=False)
+def _import_error():
+    _load_real_app()
+    if _real_app_error is None:
+        return {"ok": True, "note": "real app imported successfully"}
+    return JSONResponse({"error": "failed_to_import_raj_salary", "detail": str(_real_app_error)}, status_code=500)
+
+# Proxy any other path to the real app (or expose the import error)
+@app.api_route("/{path:path}", methods=["GET","POST","PUT","PATCH","DELETE","OPTIONS","HEAD"])
+async def _proxy(path: str):
+    _load_real_app()
+    if _real_app_error:
+        return JSONResponse({"error": "failed_to_import_raj_salary", "detail": str(_real_app_error)}, status_code=500)
+    return await _real_app.router.handle({"type": "http"})  # let FastAPI handle normally
