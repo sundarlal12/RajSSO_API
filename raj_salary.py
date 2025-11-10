@@ -623,6 +623,33 @@ def api_health():
 def health():
     return {"status": "ok"}
 
+
+from fastapi import Query
+from fastapi.responses import HTMLResponse, Response
+
+@app.get("/api/proxy_get")
+def proxy_get(session_id: str = Query(...), url: str = Query(...)):
+    """
+    Fetch a protected URL (e.g., payslip) using the *same* server-side requests.Session()
+    stored for the provided session_id, and stream it back to the client.
+    """
+    ctx = SESSION_STORE.get(session_id)
+    if not ctx:
+        raise HTTPException(status_code=400, detail={"success": False, "err": "bad_session", "msg": "Invalid/expired session_id"})
+
+    sso: RajasthanSSOComplete = ctx["sso"]
+    try:
+        r = sso.session.get(url, headers=sso._rp_headers(), allow_redirects=True, timeout=45)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={"success": False, "err": "proxy_fetch_failed", "msg": str(e)})
+
+    # Guess content-type and return
+    content_type = r.headers.get("content-type", "text/html; charset=utf-8")
+    if "text/html" in content_type.lower():
+        return HTMLResponse(r.text, status_code=r.status_code)
+    return Response(content=r.content, media_type=content_type, status_code=r.status_code)
+
+
 # ------------------------------ /api/captcha --------------------------------
 # Allow GET or POST so simple curl works
 @app.get("/api/captcha")
