@@ -8,3 +8,4 @@ pycryptodome
 httpx
 python-dotenv
 pillow
+pytesseract
