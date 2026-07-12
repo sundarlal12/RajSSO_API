@@ -660,7 +660,7 @@ from fastapi import Query, Response
 from fastapi.responses import StreamingResponse
 from urllib.parse import urlparse
 
-ALLOWED_PAYSLIP_HOSTS = {"rajerp.discoms.rajasthan.gov.in"}
+ALLOWED_PAYSLIP_HOSTS = {"energyerp.rajasthan.gov.in"}
 
 @app.get("/api/payslip")
 def api_payslip(session_id: str = Query(...), url: str = Query(...)):
