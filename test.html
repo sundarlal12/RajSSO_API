@@ -12,30 +12,72 @@
     --bg:#f7f8fb; --card:#ffffff; --line:#e6e9ef;
     --radius:14px;
   }
+
   /* Toast Notification */
-.toast {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: #fff;
-  border-left: 6px solid var(--brand);
-  box-shadow: 0 6px 20px rgba(0,0,0,.2);
-  border-radius: 10px;
-  padding: 12px 18px;
-  font-size: 14px;
-  max-width: 300px;
-  color: #333;
-  display: none;
-  z-index: 2000;
-}
-.toast.error { border-left-color: #dc2626; color:#b91c1c; }
-.toast.success { border-left-color: #16a34a; color:#065f46; }
-.toast.show { display: block; animation: fadein .3s, fadeout .3s 3.5s forwards; }
-@keyframes fadein { from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);} }
-@keyframes fadeout { from{opacity:1;} to{opacity:0;transform:translateY(-10px);} }
+  .toast {
+    position: fixed; top: 20px; right: 20px;
+    background: #fff; border-left: 6px solid var(--brand);
+    box-shadow: 0 6px 20px rgba(0,0,0,.2);
+    border-radius: 10px; padding: 12px 18px;
+    font-size: 14px; max-width: 300px; color: #333;
+    display: none; z-index: 2000;
+  }
+  .toast.error { border-left-color: #dc2626; color:#b91c1c; }
+  .toast.success { border-left-color: #16a34a; color:#065f46; }
+  .toast.show { display: block; animation: fadein .3s, fadeout .3s 3.5s forwards; }
+  @keyframes fadein { from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);} }
+  @keyframes fadeout { from{opacity:1;} to{opacity:0;transform:translateY(-10px);} }
 
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
+  a{color:var(--brand)}
+  .container{max-width:1080px;margin:0 auto;padding:16px}
+  .hidden{display:none !important}
 
-.captcha-card{
+  /* Cards */
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 6px 20px rgba(0,0,0,.04)}
+  .pad{padding:16px}
+
+  /* Buttons */
+  .btn{appearance:none;border:none;border-radius:999px;background:var(--brand);color:#fff;font-weight:600;padding:10px 16px;cursor:pointer;transition:.15s}
+  .btn:hover{background:var(--brand-600)}
+  .btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand-600)}
+  .btn.min{padding:8px 12px;border-radius:10px;font-size:13px}
+  .btn.block{width:100%}
+
+  /* Login layout */
+  #loginView{max-width:760px;margin:0 auto}
+  .title{font-weight:700;font-size:20px;margin:0 0 8px}
+  .row{display:flex;gap:12px;flex-wrap:wrap}
+  .field{flex:1 1 240px;display:flex;flex-direction:column;gap:6px;min-width:220px}
+  label{font-size:12px;color:var(--muted)}
+  input[type="text"], input[type="password"]{
+    border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;outline:none;font-size:14px;width:100%
+  }
+  input:focus{border-color:var(--brand-600);box-shadow:0 0 0 3px rgba(240,111,111,.12)}
+
+  /* Captcha section */
+  /* .captcha-card{
+    margin-top:10px;padding:14px;border:1px dashed var(--line);border-radius:12px;background:#fafbff;
+    display:flex;flex-direction:column;gap:12px
+  }
+  .captcha-img-row{
+    display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:nowrap;
+  }
+  .captcha-img-box{
+    display:flex;align-items:center;justify-content:center;
+    width:min(420px,85vw);min-width:240px;margin:0 auto;
+    background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px
+  }
+  .captcha-img{max-height:90px;width:auto;max-width:100%;object-fit:contain}
+  .refresh-btn{
+    width:46px;height:46px;border-radius:12px;padding:0;font-size:20px;line-height:1;background:var(--brand);color:#fff;font-weight:700;
+    display:flex;align-items:center;justify-content:center;flex:0 0 auto
+  }
+  .refresh-btn:hover{background:var(--brand-600)} */
+
+  .captcha-card{
   margin-top:10px;padding:14px;border:1px dashed var(--line);
   border-radius:12px;background:#fafbff;
   display:flex;flex-direction:column;gap:12px;
@@ -68,62 +110,24 @@
 } 
 
 
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial}
-  a{color:var(--brand)}
-  .container{max-width:1080px;margin:0 auto;padding:16px}
-  .hidden{display:none !important}
-
-  /* Cards */
-  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:0 6px 20px rgba(0,0,0,.04)}
-  .pad{padding:16px}
-
-  /* Buttons */
-  .btn{appearance:none;border:none;border-radius:999px;background:var(--brand);color:#fff;font-weight:600;padding:10px 16px;cursor:pointer;transition:.15s}
-  .btn:hover{background:var(--brand-600)}
-  .btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand-600)}
-  .btn.min{padding:8px 12px;border-radius:10px;font-size:13px}
-  .btn.block{width:100%}
-
-  /* Login layout */
-  #loginView{max-width:760px;margin:0 auto}
-  .title{font-weight:700;font-size:20px;margin:0 0 8px}
-  .row{display:flex;gap:12px;flex-wrap:wrap}
-  .field{flex:1 1 240px;display:flex;flex-direction:column;gap:6px;min-width:220px}
-  label{font-size:12px;color:var(--muted)}
-  input[type="text"], input[type="password"]{
-    border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;outline:none;font-size:14px;width:100%
-  }
-  input:focus{border-color:var(--brand-600);box-shadow:0 0 0 3px rgba(240,111,111,.12)}
-
-  /* Captcha */
-  .captcha-card{
-    margin-top:10px;padding:14px;border:1px dashed var(--line);border-radius:12px;background:#fafbff;
-    display:flex;flex-direction:column;gap:12px
-  }
-  .captcha-img-box{
-    display:flex;align-items:center;justify-content:center;
-    width:100%;max-width:420px;margin:0 auto;
-    background:#fff;border:1px solid var(--line);border-radius:12px;padding:8px
-  }
-  .captcha-img{max-height:90px;width:auto;max-width:100%;object-fit:contain}
-  .digits{display:flex;justify-content:center;gap:4px;flex-wrap:wrap}
+  .digits{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
   .digits input{
-    width:42px;height:48px;text-align:center;font-size:20px;font-weight:700;border:1px solid var(--line);border-radius:10px;outline:none
+    width:42px;height:48px;text-align:center;font-size:20px;font-weight:700;border:1px solid var(--line);border-radius:10px;outline:none;background:#fff
   }
   .digits input:focus{border-color:var(--brand-600);box-shadow:0 0 0 3px rgba(240,111,111,.12)}
   .captcha-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-  .captcha-actions .btn{min-width:160px}
+  .captcha-actions .btn{min-width:200px}
 
-  @media (max-width:480px){
-    .digits input{width:36px;height:44px}
+  @media (max-width:560px){
+    .captcha-img-row{gap:8px}
     .captcha-img{max-height:80px}
+    .refresh-btn{width:40px;height:40px;font-size:18px}
+    .digits input{width:36px;height:44px}
     .field{min-width:100%}
     .captcha-actions .btn{width:100%}
   }
 
-  /* Loader (thin) */
+  /* Loader (thin inside card) */
   .loader{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}
   .progress{height:10px;background:#eef1f6;border-radius:999px;overflow:hidden}
   .bar{height:100%;width:0;background:var(--brand);transition:width .25s}
@@ -132,15 +136,19 @@
   /* Salary table + viewer */
   .toolbar{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding:12px 16px;gap:8px;flex-wrap:wrap}
   .toolbar h3{margin:0;font-size:16px}
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;background:rgba(148,163,184,.15);color:#111827;
+    border:1px solid #cbd5e1;padding:6px 10px;border-radius:999px;font-size:12px;line-height:1;white-space:nowrap
+  }
+  .badge::before{content:"•";font-weight:700;opacity:.8}
   .table-wrap{overflow:auto}
   table{width:100%;border-collapse:separate;border-spacing:0}
   thead th{position:sticky;top:0;background:#fff;border-bottom:1px solid var(--line);padding:12px 10px;font-size:12px;color:#64748b;text-transform:uppercase;letter-spacing:.06em;text-align:left}
   tbody td{padding:10px;border-top:1px solid var(--line)}
   .act{display:flex;justify-content:flex-end}
-
   .viewer{width:100%;height:74vh;border:0;border-top:1px solid var(--line);background:#fff}
 
-  /* Full-screen overlay loader */
+  /* Full-screen overlay loader (circular) */
   #overlay{
     position:fixed;inset:0;background:rgba(0,0,0,.38);
     display:none;align-items:center;justify-content:center;z-index:1000
@@ -183,10 +191,12 @@
       </div>
 
       <!-- <div class="captcha-card">
-        <div class="captcha-img-box">
-          <img id="captchaImg" class="captcha-img" alt="Captcha" />  <button id="reloadBtn" class="btn min">R</button>
+        <div class="captcha-img-row">
+          <div class="captcha-img-box">
+            <img id="captchaImg" class="captcha-img" alt="Captcha" />
+          </div>
+          <button id="reloadBtn" class="btn refresh-btn" title="Reload Captcha">↻</button>
         </div>
-        
 
         <div class="digits" id="capWrap">
           <input maxlength="1" inputmode="numeric" pattern="[0-9]*">
@@ -198,7 +208,6 @@
         </div>
 
         <div class="captcha-actions">
-         
           <button id="loginBtn" class="btn">Login & Continue</button>
         </div>
 
@@ -207,7 +216,8 @@
           <div id="hint" class="hint">Preparing…</div>
         </div>
       </div> -->
-      <div class="captcha-card">
+
+            <div class="captcha-card">
   <div class="captcha-img-row">
     <div class="captcha-img-box">
       <img id="captchaImg" class="captcha-img" alt="Captcha" />
@@ -241,7 +251,8 @@
       <div class="toolbar">
         <h3>My Salary</h3>
         <div class="row" style="gap:8px">
-          <button id="backBtn" class="btn ghost min hidden">← Back to Table</button>
+          <button id="backBtn" class="btn ghost min hidden">← Back</button>
+          <span id="periodBadge" class="badge hidden">Pay Slip </span>
           <a id="downloadBtn" class="btn min hidden" download="payslip.pdf">Download PDF</a>
           <button id="logoutBtn" class="btn ghost min">Logout</button>
         </div>
@@ -262,7 +273,6 @@
     </section>
   </div>
 
-
   <div id="toast" class="toast"></div>
 
 <script>
@@ -277,6 +287,7 @@ const reloadBtn  = document.getElementById("reloadBtn");
 const loginBtn   = document.getElementById("loginBtn");
 const logoutBtn  = document.getElementById("logoutBtn");
 const backBtn    = document.getElementById("backBtn");
+const periodBadge= document.getElementById("periodBadge");
 const downloadBtn= document.getElementById("downloadBtn");
 
 const captchaImg = document.getElementById("captchaImg");
@@ -303,6 +314,9 @@ let SESSION_ID = localStorage.getItem(LS_KEY) || "";
 let LAST_PROXY_URL = null;
 let BLOB_URL = null;
 
+/* Keep table refs to derive period later */
+let _headersRef = [];
+let _rowsRef = [];
 
 /* ====== TOAST (notification) ====== */
 function showToast(message, type="info"){
@@ -312,7 +326,6 @@ function showToast(message, type="info"){
   setTimeout(() => toast.classList.remove("show"), 4000);
 }
 
-
 /* ====== UTIL ====== */
 function showLoader(on=true){ loader.style.display = on ? "block":"none"; }
 function setProgress(v, t){ bar.style.width = v + "%"; if(t) hint.textContent = t; }
@@ -321,12 +334,32 @@ function hide(el){ el.classList.add("hidden"); }
 function capValue(){ return capInputs.map(i => (i.value||"").trim()).join(""); }
 function resetDigits(){ capInputs.forEach(i => i.value=""); capInputs[0].focus(); }
 capInputs.forEach((inp, i) => {
-  inp.addEventListener("input", () => { inp.value = inp.value.replace(/\D/g,"").slice(0,1); if(inp.value && i<5) capInputs[i+1].focus(); });
-  inp.addEventListener("keydown", e => { if(e.key==="Backspace" && !inp.value && i>0) capInputs[i-1].focus(); });
+  inp.addEventListener("input", () => {
+    inp.value = inp.value.replace(/\D/g,"").slice(0,1);
+    if(inp.value && i<5) capInputs[i+1].focus();
+  });
+  inp.addEventListener("keydown", e => {
+    if(e.key==="Backspace" && !inp.value && i>0) capInputs[i-1].focus();
+  });
 });
 function setOverlay(text, visible){
   ovText.textContent = text || "Loading…";
   overlay.classList.toggle("visible", !!visible);
+}
+function esc(s){ return String(s??"").replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[m])); }
+
+/* Period helpers */
+function getPeriodFromRow(headers, cells){
+  let idx = headers.findIndex(h => /period|pay\s*period|month|pay\s*month/i.test(h));
+  if (idx >= 0 && cells[idx]) return cells[idx];
+  const mIdx = headers.findIndex(h => /month/i.test(h));
+  const yIdx = headers.findIndex(h => /year/i.test(h));
+  if (mIdx >= 0 && yIdx >= 0 && cells[mIdx] && cells[yIdx]) return `${cells[mIdx]} ${cells[yIdx]}`;
+  return cells[0] || "";
+}
+function showPeriodBadge(text){
+  if (!text){ hide(periodBadge); periodBadge.textContent = ""; return; }
+  periodBadge.textContent = text; show(periodBadge);
 }
 
 /* ====== API ====== */
@@ -341,6 +374,7 @@ async function getCaptcha(){
     setProgress(100, "Captcha ready");
   }catch(e){
     hint.textContent = e.message || "Captcha error";
+    showToast(hint.textContent, "error");
   }finally{
     setTimeout(()=>showLoader(false), 200);
     setOverlay("", false);
@@ -351,12 +385,16 @@ async function loginAndFetch(){
   const u = usernameEl.value.trim();
   const p = passwordEl.value;
   const c = capValue();
-if(!(u && p && /^\d{6}$/.test(c))){
-  showToast("Enter username, password, and 6-digit captcha.", "error");
-  return;
-}
 
-  if(!SESSION_ID){ await getCaptcha(); alert("Session refreshed. Try again."); return; }
+  if(!(u && p && /^\d{6}$/.test(c))){
+    showToast("Enter username, password, and 6-digit captcha.", "error");
+    return;
+  }
+  if(!SESSION_ID){
+    await getCaptcha();
+    showToast("Session refreshed. Try again.", "error");
+    return;
+  }
 
   showLoader(true); setProgress(30,"Submitting login…"); setOverlay("Signing in…", true);
   try{
@@ -365,20 +403,23 @@ if(!(u && p && /^\d{6}$/.test(c))){
       headers:{ "Content-Type":"application/json" },
       body: JSON.stringify({ session_id: SESSION_ID, username: u, password: p, captcha: c })
     });
-if(!r.ok){
-  const e = await safeJson(r);
-  const msg = e?.detail?.msg || e?.msg || "Login failed";
-  showToast(msg, "error");
-  throw new Error(msg);
-}
+
+    if(!r.ok){
+      const e = await safeJson(r);
+      const msg = e?.detail?.msg || e?.msg || "Login failed";
+      showToast(msg, "error");
+      throw new Error(msg);
+    }
 
     setProgress(70,"Loading salary…");
     const j = await r.json();
     renderTable(j.mysalary);
+
     // switch views
     loginView.style.display = "none";
     salaryView.classList.remove("hidden");
     setProgress(100,"Done");
+    showToast("Login successful.", "success");
   }catch(e){
     hint.textContent = e.message || "Login error";
     resetDigits();
@@ -392,23 +433,61 @@ if(!r.ok){
 async function safeJson(res){ try{ return await res.json(); }catch{return null;} }
 
 /* ====== TABLE / VIEWER ====== */
-function esc(s){ return String(s??"").replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;" }[m])); }
-
-function renderTable(payload){
+function renderTable(payload) {
   const headers = payload?.headers || [];
-  const rows    = payload?.rows || [];
-  thead.innerHTML = `<tr>${headers.map(h=>`<th>${esc(h)}</th>`).join("")}<th style="text-align:right">Action</th></tr>`;
-  tbody.innerHTML = rows.map((r)=>{
-    const cols = (r.cells||[]).map(c=>`<td>${esc(c)}</td>`).join("");
-    const href = (r.links && r.links[0]?.href) || "";
-    const btn  = href ? `<button class="btn min" onclick="openPayslip('${encodeURIComponent(href)}')">Open Payslip</button>` : `<span class="muted">—</span>`;
-    return `<tr>${cols}<td class="act">${btn}</td></tr>`;
-  }).join("");
+  const rows = payload?.rows || [];
+
+  // Save for later (period badge)
+  _headersRef = headers;
+  _rowsRef = rows;
+
+  // exact headers from API
+  thead.innerHTML = `<tr>${headers.map(h => `<th>${esc(h)}</th>`).join("")}</tr>`;
+
+  // find "Action" column index (case-insensitive)
+  const actionIndex = headers.findIndex(h => h.toLowerCase().includes("action"));
+
+  // identify monetary columns by header names
+  const moneyCols = headers
+    .map((h, i) => /earn|deduct|net|amount/i.test(h) ? i : -1)
+    .filter(i => i !== -1);
+
+  tbody.innerHTML = rows
+    .map((r, rowIdx) => {
+      const href = (r.links && r.links[0]?.href) || "";
+      const cells = (r.cells || []).map((c, i) => {
+        const isMoney = moneyCols.includes(i);
+        const isNumber = /^[\d,.]+$/.test((c||"").trim());
+        let value = esc(c || "");
+
+        if (isMoney && isNumber && !value.startsWith("₹")) value = `₹ ${value}`;
+
+        if (i === actionIndex) {
+          return `<td class="act">
+            ${href
+              ? `<button class="btn min" onclick="openPayslip('${encodeURIComponent(href)}', ${rowIdx})">View</button>`
+              : `<span class="muted">—</span>`}
+          </td>`;
+        }
+        return `<td>${value}</td>`;
+      });
+
+      return `<tr>${cells.join("")}</tr>`;
+    })
+    .join("");
 }
 
-window.openPayslip = async function(encodedHref){
+window.openPayslip = async function(encodedHref, rowIdx){
   const href = decodeURIComponent(encodedHref);
-  if(!SESSION_ID){ alert("Session expired. Please login again."); return; }
+  if(!SESSION_ID){
+    showToast("Session expired. Please login again.", "error");
+    return;
+  }
+
+  // Show selected period near Back button
+  const selected = _rowsRef?.[rowIdx];
+  const periodText = selected ? getPeriodFromRow(_headersRef, selected.cells || []) : "";
+  showPeriodBadge(periodText);
 
   const qs = new URLSearchParams({ session_id: SESSION_ID, url: href }).toString();
   LAST_PROXY_URL = `${API_BASE}/api/payslip?${qs}`;
@@ -417,7 +496,7 @@ window.openPayslip = async function(encodedHref){
   setOverlay("Loading payslip…", true);
 
   try{
-    viewer.srcdoc = "<html><body style='margin:0;padding:18px;font-family:system-ui'>Loading payslip…</body></html>";
+    viewer.srcdoc = "<html><body style='margin:0;padding:18px;font-family:system-ui;text-align:center'>Loading…</body></html>";
     const res = await fetch(LAST_PROXY_URL);
     const ct  = (res.headers.get("content-type") || "").toLowerCase();
 
@@ -434,9 +513,11 @@ window.openPayslip = async function(encodedHref){
       const html = await res.text();
       viewer.removeAttribute("src");
       viewer.srcdoc = html;
+      hide(downloadBtn);
     }
   }catch(e){
     viewer.srcdoc = `<html><body style="margin:0;padding:18px;font-family:system-ui;color:#b91c1c">Error: ${esc(e?.message||e)}</body></html>`;
+    hide(downloadBtn);
   }finally{
     setOverlay("", false);
   }
@@ -445,6 +526,7 @@ window.openPayslip = async function(encodedHref){
 backBtn.addEventListener("click", ()=>{
   if(BLOB_URL){ URL.revokeObjectURL(BLOB_URL); BLOB_URL=null; }
   viewer.removeAttribute("src"); viewer.removeAttribute("srcdoc");
+  hide(periodBadge);
   hide(viewerPane); show(tablePane);
   hide(backBtn); hide(downloadBtn);
 });
@@ -456,7 +538,7 @@ logoutBtn.addEventListener("click", ()=>{
   localStorage.removeItem(LS_KEY); SESSION_ID="";
   viewer.removeAttribute("src"); viewer.removeAttribute("srcdoc");
   hide(viewerPane); show(tablePane);
-  hide(backBtn); hide(downloadBtn);
+  hide(backBtn); hide(downloadBtn); hide(periodBadge);
   salaryView.classList.add("hidden");
   loginView.style.display = "block";
   resetDigits();

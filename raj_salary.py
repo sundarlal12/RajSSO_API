@@ -126,9 +126,9 @@ class RajasthanSSOComplete:
             "rp_cookies": {...}
           }
         """
-        url = "https://rajerp.discoms.rajasthan.gov.in/HRM/SalaryProcess/MySalary"
+        url = "https://energyerp.rajasthan.gov.in/HRM/SalaryProcess/MySalary"
         headers = self._rp_headers()
-        headers["Referer"] = "https://rajerp.discoms.rajasthan.gov.in/SSOIndex.aspx"
+        headers["Referer"] = "https://energyerp.rajasthan.gov.in/SSOIndex.aspx"
 
         r = self.session.get(url, headers=headers, allow_redirects=True)
         if r.status_code != 200:
@@ -558,7 +558,7 @@ def main():
     userdetails = sso.sso_get_userdetails_exact()
     if not userdetails:
         return
-    rp_url = "https://rajerp.discoms.rajasthan.gov.in/SSOIndex.aspx"
+    rp_url = "https://energyerp.rajasthan.gov.in/SSOIndex.aspx"
     rp_resp = sso.rp_post_userdetails(rp_url, userdetails)
     salary_payload = sso.rp_fetch_my_salary()
     if not salary_payload:
@@ -685,7 +685,7 @@ def api_payslip(session_id: str = Query(...), url: str = Query(...)):
 
     # Use same session/cookies; set a sensible Referer
     headers = sso._rp_headers()
-    headers["Referer"] = "https://rajerp.discoms.rajasthan.gov.in/SSOIndex.aspx"
+    headers["Referer"] = "https://energyerp.rajasthan.gov.in/SSOIndex.aspx"
 
     try:
         r = sso.session.get(url, headers=headers, allow_redirects=True, timeout=45)
@@ -702,9 +702,9 @@ def api_payslip(session_id: str = Query(...), url: str = Query(...)):
     text = r.text
     # very small, safe injection (does not break existing <head>)
     if "<head" in text.lower():
-        text = re.sub(r"(?i)<head(.*?)>", r'<head\1><base href="https://rajerp.discoms.rajasthan.gov.in/">', text, count=1)
+        text = re.sub(r"(?i)<head(.*?)>", r'<head\1><base href="https://energyerp.rajasthan.gov.in/">', text, count=1)
     else:
-        text = f'<base href="https://rajerp.discoms.rajasthan.gov.in/">{text}'
+        text = f'<base href="https://energyerp.rajasthan.gov.in/">{text}'
 
     return Response(content=text, media_type="text/html; charset=utf-8")
 
@@ -851,7 +851,7 @@ def api_my_salary(payload: LoginPayload):
         )
 
     # RP hop + salary
-    rp_url = "https://rajerp.discoms.rajasthan.gov.in/SSOIndex.aspx"
+    rp_url = "https://energyerp.rajasthan.gov.in/SSOIndex.aspx"
     sso.rp_post_userdetails(rp_url, userdetails)
 
     salary_payload = sso.rp_fetch_my_salary()
